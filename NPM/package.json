@@ -8,5 +8,8 @@
   },
   "author": "Damián Arp",
   "license": "ISC",
-  "dependencies": {}
+  "dependencies": {
+    "colors": "^1.4.0",
+    "mongoose": "^6.0.10"
+  }
 }

@@ -20,12 +20,15 @@ app.get('/',(req, res) => {
 
 app.get('/api/usuarios',(req, res) => {
     // Enviamos información al servidor.
-    res.send(['María', 'Rodrigo', 'Pedro', 'Carla']);
+    res.send(['María', 'Rodrigo', 'Pedro', 'Carla', 'Marcelo']);
 }); 
 
+// Creamos una variable de entorno a través del método process, para definir el puerto.
+const port =  process.env.PORT || 3000;   
+
 // Indicamos el puerto en el que va a estar escuchando el servidor web.
-app.listen(3000, () => {
-    console.log('Escuchando en el puerto 3000...');
+app.listen(port, () => {
+    console.log(`Escuchando en el puerto ${port }...`);
 });
 
 

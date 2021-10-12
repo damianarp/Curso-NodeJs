@@ -23,6 +23,11 @@ app.get('/api/usuarios',(req, res) => {
     res.send(['María', 'Rodrigo', 'Pedro', 'Carla', 'Marcelo']);
 }); 
 
+app.get('/api/usuarios/:id',(req, res) => {
+    // Enviamos información al servidor.
+    res.send(req.params.id)  ;
+});
+
 // Creamos una variable de entorno a través del método process, para definir el puerto.
 const port =  process.env.PORT || 3000;   
 

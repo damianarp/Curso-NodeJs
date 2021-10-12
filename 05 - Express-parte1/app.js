@@ -54,10 +54,12 @@ app.post('/api/usuarios',(req, res) => {
     // Creamos el nuevo usuario.
     const usuario = {
         id: usuarios.length + 1,
-        nombre = req.body.nombre
+        nombre: req.body.nombre
     };
     // Introducimos el nuevo usuario en el arreglo.
     usuarios.push(usuario);
+    // Enviamos el usuario.
+    res.send(usuario);
 });
 
 // Creamos una variable de entorno a través del método process, para definir el puerto.

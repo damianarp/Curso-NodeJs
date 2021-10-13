@@ -35,7 +35,7 @@ app.get('/',(req, res) => {
 
 // Solicitamos información al servidor.
 app.get('/api/usuarios',(req, res) => {
-    res.send(['María', 'Rodrigo', 'Pedro', 'Carla', 'Marcelo']);
+    res.send(usuarios);
 }); 
 
 // Solicitamos información al servidor.
@@ -52,7 +52,7 @@ app.get('/api/usuarios/:id',(req, res) => {
 /////// PETICIONES POST ///////
 // Enviamos información al servidor.
 app.post('/api/usuarios',(req, res) => {
-    // Validación de la petición con joi.
+    // Validación de la petición con librería Joi.
     // Definimos el schema de validación.
     const schema = Joi.object({
         nombre: Joi.string()
@@ -110,6 +110,35 @@ app.post('/api/usuarios',(req, res) => {
     // usuarios.push(usuario);
     // // Enviamos el usuario.
     // res.send(usuario);
+});
+
+/////// PETICIONES PUT ///////
+app.put('/api/usuarios/:id',(req, res) => {
+    // Comprobar si existe el objeto usuario a modificar.
+    // Para ello, definimos un usuario, hacemos la busqueda en el arreglo de usuarios, parseamos el id que estamos recibiendo como parámetro, comparamos el id del request y del usuario.
+    let usuario = usuarios.find(u => u.id === parseInt(req.params.id));
+    // Si no encuentra el usuario, status 404.
+    if(!usuario) res.status(404).send('El usuario no fue encontrado');
+
+    // Validamos si el dato que está viniendo es un dato correcto (nombre).
+    const schema = Joi.object({
+        nombre: Joi.string()
+                    .min(3)
+                    .required()
+    });
+    // Desestructuramos la variable result.
+    const {error, value} = schema.validate({nombre: req.body.nombre});
+
+    // Validamos si existe un error.
+    if(error) {
+        const mensaje = error.details[0].message;
+        res.status(400).send(mensaje);
+        return;
+    }
+
+    // Validamos el usuario modificado y lo enviamos.
+    usuario.nombre = value.nombre;
+    res.send(usuario);
 });
 
 // Creamos una variable de entorno a través del método process, para definir el puerto.

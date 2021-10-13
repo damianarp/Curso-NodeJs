@@ -115,6 +115,25 @@ app.put('/api/usuarios/:id',(req, res) => {
     res.send(usuario);
 });
 
+/////// PETICIONES DELETE ///////
+app.delete('/api/usuarios/:id',(req, res) => {
+    // Comprobar si existe el objeto usuario a eliminar.
+    // Para ello, definimos un usuario y llamamos a la función existeUsuario(req.params.id).
+    let usuario = existeUsuario(req.params.id);
+    // Si no encuentra el usuario, status 404.
+    if(!usuario) {
+        res.status(404).send('El usuario no fue encontrado');
+        return;
+    }
+
+    // Definimos el índice del usuario para identificar el usuario encontrado para luego hacer la eliminación con el método splice() donde eliminamos solamente 1 elemento (si no especificamos la cantidad de elementos, se eliminarán todos los elementos del arreglo a partir de ese índice).
+    const index = usuarios.indexOf(usuario);
+    usuarios.splice(index, 1);
+
+    // Enviamos la respuesta al cliente.
+    res.send(`El usuario ${usuario.nombre} ha sido eliminado.`);
+});
+
 // Creamos una variable de entorno a través del método process, para definir el puerto.
 const port = process.env.PORT || 3000;   
 

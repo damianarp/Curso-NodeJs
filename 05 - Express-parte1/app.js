@@ -40,9 +40,8 @@ app.get('/api/usuarios',(req, res) => {
 
 // Solicitamos información al servidor.
 app.get('/api/usuarios/:id',(req, res) => {
-    // Definimos una variable usuario, la cual consta de una función find() que busca el id de cada usuario del arreglo y lo compara con el id del request que solicitamos como parámetro al servidor.
-    // Como el valor que devuelve el get es un string, debemos parsearlo a Integer.
-    let usuario = usuarios.find(u => u.id === parseInt(req.params.id));
+    // Definimos una variable usuario, llamamos a la función existeUsuario() y le pasamos como parámetro req.params.id.
+    let usuario = existeUsuario(req.params.id);
     // Si no encuentra el usuario, status 404.
     if(!usuario) res.status(404).send('El usuario no fue encontrado');
     // Si lo encuentra, que el servidor me envíe el usuario como respuesta.
@@ -52,31 +51,8 @@ app.get('/api/usuarios/:id',(req, res) => {
 /////// PETICIONES POST ///////
 // Enviamos información al servidor.
 app.post('/api/usuarios',(req, res) => {
-    // Validación de la petición con librería Joi.
-    // Definimos el schema de validación.
-    const schema = Joi.object({
-        nombre: Joi.string()
-                    .min(3)
-                    .required()
-    });
-    // Utilizamos el schema en una variable result.
-    //const result = schema.validate({nombre: req.body.nombre});
-
-    // Corroboramos con un console.log() lo que se arroja en consola al enviar un usuario que no pasa la validación por POSTMAN.
-    //console.log(result);
-
-    // En consola se muestra esto:
-
-    // {
-    //     value: { nombre: 'Gi' },
-    //     error: [Error [ValidationError]: "nombre" length must be at least 3 characters long] {
-    //       _original: { nombre: 'Gi' },
-    //       details: [ [Object] ]
-    //     }
-    // }
-
-    // Desestructuramos la variable result.
-    const {error, value} = schema.validate({nombre: req.body.nombre});
+    // Desestructuramos la variable result y llamamos a la funcón validarUsuario() y le pasamos como parámetro req.body.nombre.
+    const {error, value} = validarUsuario(req.body.nombre);
 
     // Validamos. Si no existe error:
     if(!error) {
@@ -115,19 +91,17 @@ app.post('/api/usuarios',(req, res) => {
 /////// PETICIONES PUT ///////
 app.put('/api/usuarios/:id',(req, res) => {
     // Comprobar si existe el objeto usuario a modificar.
-    // Para ello, definimos un usuario, hacemos la busqueda en el arreglo de usuarios, parseamos el id que estamos recibiendo como parámetro, comparamos el id del request y del usuario.
-    let usuario = usuarios.find(u => u.id === parseInt(req.params.id));
+    // Para ello, definimos un usuario y llamamos a la función existeUsuario(req.params.id).
+    let usuario = existeUsuario(req.params.id);
     // Si no encuentra el usuario, status 404.
-    if(!usuario) res.status(404).send('El usuario no fue encontrado');
+    if(!usuario) {
+        res.status(404).send('El usuario no fue encontrado');
+        return;
+    }
 
     // Validamos si el dato que está viniendo es un dato correcto (nombre).
-    const schema = Joi.object({
-        nombre: Joi.string()
-                    .min(3)
-                    .required()
-    });
-    // Desestructuramos la variable result.
-    const {error, value} = schema.validate({nombre: req.body.nombre});
+    // Desestructuramos la variable result y llamamos a la función validarUsuario() y le pasamos como parámetro req.body.nombre.
+    const {error, value} = validarUsuario(req.body.nombre);
 
     // Validamos si existe un error.
     if(error) {
@@ -142,12 +116,49 @@ app.put('/api/usuarios/:id',(req, res) => {
 });
 
 // Creamos una variable de entorno a través del método process, para definir el puerto.
-const port =  process.env.PORT || 3000;   
+const port = process.env.PORT || 3000;   
 
 // Indicamos el puerto en el que va a estar escuchando el servidor web.
 app.listen(port, () => {
     console.log(`Escuchando en el puerto ${port }...`);
 });
+
+///////// FUNCIONES DE VALIDACIÓN //////////
+
+// Método para comprobar si existe el usuario.
+function existeUsuario(id) {
+    // Retornamos una función find() que busca el id de cada usuario del arreglo y lo compara con el id del request que solicitamos como parámetro al servidor.
+    // Como el valor que devuelve el get es un string, debemos parsearlo a Integer.
+    return (usuarios.find(u => u.id === parseInt(id)));
+}
+
+// Método para validar usuario.
+function validarUsuario(nom) {
+    // Validación de la petición con librería Joi.
+    // Definimos el schema de validación.
+    const schema = Joi.object({
+        nombre: Joi.string()
+                    .min(3)
+                    .required()
+    });
+    // Utilizamos el schema en una variable result.
+    //const result = schema.validate({nombre: req.body.nombre});
+
+    // Corroboramos con un console.log() lo que se arroja en consola al enviar un usuario que no pasa la validación por POSTMAN.
+    //console.log(result);
+
+    // En consola se muestra esto:
+
+    // {
+    //     value: { nombre: 'Gi' },
+    //     error: [Error [ValidationError]: "nombre" length must be at least 3 characters long] {
+    //       _original: { nombre: 'Gi' },
+    //       details: [ [Object] ]
+    //     }
+    // }
+    // Retornamos el schema.
+    return (schema.validate({nombre: nom}));
+}
 
 
 

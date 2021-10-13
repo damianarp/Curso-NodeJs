@@ -1,5 +1,6 @@
-// Importamos Express dentro de una const.
+// Importamos Express y Joi.
 const express = require('express');
+const Joi = require('joi');
 
 // Creamos una instancia de express (nuestra app).
 const app = express();
@@ -51,22 +52,64 @@ app.get('/api/usuarios/:id',(req, res) => {
 /////// PETICIONES POST ///////
 // Enviamos información al servidor.
 app.post('/api/usuarios',(req, res) => {
+    // Validación de la petición con joi.
+    // Definimos el schema de validación.
+    const schema = Joi.object({
+        nombre: Joi.string()
+                    .min(3)
+                    .required()
+    });
+    // Utilizamos el schema en una variable result.
+    //const result = schema.validate({nombre: req.body.nombre});
+
+    // Corroboramos con un console.log() lo que se arroja en consola al enviar un usuario que no pasa la validación por POSTMAN.
+    //console.log(result);
+
+    // En consola se muestra esto:
+
+    // {
+    //     value: { nombre: 'Gi' },
+    //     error: [Error [ValidationError]: "nombre" length must be at least 3 characters long] {
+    //       _original: { nombre: 'Gi' },
+    //       details: [ [Object] ]
+    //     }
+    // }
+
+    // Desestructuramos la variable result.
+    const {error, value} = schema.validate({nombre: req.body.nombre});
+
+    // Validamos. Si no existe error:
+    if(!error) {
+        // Creamos el nuevo usuario.
+        const usuario = {
+            id: usuarios.length + 1,
+            nombre: value.nombre
+        };
+        // Introducimos el nuevo usuario en el arreglo.
+        usuarios.push(usuario);
+        // Enviamos el usuario.
+        res.send(usuario);
+    } else {
+        const mensaje = error.details[0].message;
+        res.status(400).send(mensaje);
+    }
+
     // Validación sencilla de la petición.
     // Si no existe el dato que estoy requiriendo dentro del body que se llama nombre o es menor a 2 caracteres, entonces que responda con un status 400 Bad Request.
-    if(!req.body.nombre || req.body.nombre.length <= 2) {
-        res.status(400).send('Debe ingresar un nombre que tenga como mínimo 3 letras.');
-        // Colocamos un return para que no continue la petición cuando detecte este comportamiento y así no se agregue un usuario vacío.
-        return;
-    }
-    // Creamos el nuevo usuario.
-    const usuario = {
-        id: usuarios.length + 1,
-        nombre: req.body.nombre
-    };
-    // Introducimos el nuevo usuario en el arreglo.
-    usuarios.push(usuario);
-    // Enviamos el usuario.
-    res.send(usuario);
+    // if(!req.body.nombre || req.body.nombre.length <= 2) {
+    //     res.status(400).send('Debe ingresar un nombre que tenga como mínimo 3 letras.');
+    //     // Colocamos un return para que no continue la petición cuando detecte este comportamiento y así no se agregue un usuario vacío.
+    //     return;
+    // }
+    // // Creamos el nuevo usuario.
+    // const usuario = {
+    //     id: usuarios.length + 1,
+    //     nombre: req.body.nombre
+    // };
+    // // Introducimos el nuevo usuario en el arreglo.
+    // usuarios.push(usuario);
+    // // Enviamos el usuario.
+    // res.send(usuario);
 });
 
 // Creamos una variable de entorno a través del método process, para definir el puerto.

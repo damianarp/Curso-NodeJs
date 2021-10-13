@@ -11,8 +11,12 @@ const app = express();
 // Cargamos el middleware express.json() en la app con el método use(), el cual permite recibir como requerimiento formato del tipo JSON.
 app.use(express.json());
 
-// Cargamos el middleware urlencoded con la propiedad extended = true, que permite trabajar con querystrings (cadena de consulta que contiene datos con nombre y valor, concatenados con el símbolo &).
+// Cargamos el middleware express.urlencoded() con la propiedad extended = true, que permite trabajar con querystrings (cadena de consulta que contiene datos con nombre y valor, concatenados con el símbolo &).
 app.use(express.urlencoded({extended:true}));
+
+// Cargamos el middleware express.static() para poder publicar recursos estáticos dentro de un servidor estático, como imágenes, archivos, etc.
+// Le enviamos como parámetro una carpeta que se llame public.
+app.use(express.static('public'));
 
 ///////////
 

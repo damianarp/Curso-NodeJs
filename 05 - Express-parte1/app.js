@@ -1,6 +1,8 @@
-// Importamos Express y Joi.
+// Importaciones necesarias.
 const express = require('express');
 const Joi = require('joi');
+const logger = require('./logger');
+const auth = require('./auth');
 
 // Creamos una instancia de express (nuestra app).
 const app = express();
@@ -8,6 +10,17 @@ const app = express();
 // Para enviar por POST al servidor (en formato JSON) debemos trabajar con Middlewares para que parseen este tipo de datos cuando el servidor los reciba.
 // Cargamos el middleware express.json() en la app con el método use(), el cual permite recibir como requerimiento formato del tipo JSON.
 app.use(express.json());
+
+///////////
+
+// Ejemplos del uso de middlewares personalizados.
+// Cargamos el middleware logger.
+app.use(logger);
+
+// Cargamos el middleware auth.
+app.use(auth);
+
+///////////
 
 // Definimos un arreglo de usuarios, con id y nombre.
 const usuarios = [

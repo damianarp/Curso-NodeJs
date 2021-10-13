@@ -2,18 +2,18 @@
 const http = require('http');
 
 // Creamos el servidor u objeto server con una función callback con request y response como parámetros.
-const server = http.createServer((req, resp) => {
+const server = http.createServer((req, res) => {
     // Si el request es igual al home...
      if(req.url === '/') {
          // Se escribe el response
-         resp.write('Hola Mundo!');
+         res.write('Hola Mundo!');
          // Finaliza el response
-         resp.end();
+         res.end();
      }
 
      if(req.url === '/api/productos') {
-         resp.write(JSON.stringify(['manzana','pera','mandarina','naranja','banana'])); 
-         resp.end();
+         res.write(JSON.stringify(['manzana','pera','mandarina','naranja','banana'])); 
+         res.end();
      }
 }); 
 

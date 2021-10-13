@@ -11,6 +11,9 @@ const app = express();
 // Cargamos el middleware express.json() en la app con el método use(), el cual permite recibir como requerimiento formato del tipo JSON.
 app.use(express.json());
 
+// Cargamos el middleware urlencoded con la propiedad extended = true, que permite trabajar con querystrings (cadena de consulta que contiene datos con nombre y valor, concatenados con el símbolo &).
+app.use(express.urlencoded({extended:true}));
+
 ///////////
 
 // Ejemplos del uso de middlewares personalizados.
@@ -64,6 +67,15 @@ app.get('/api/usuarios/:id',(req, res) => {
 /////// PETICIONES POST ///////
 // Enviamos información al servidor.
 app.post('/api/usuarios',(req, res) => {
+    
+    // Demostrando como llegan los datos enviados como formulario con el middleware expres.urlencoded().
+    // let body = req.body;
+    // console.log(body.nombre);
+    // res.json({
+    //     body
+    // });
+
+    // Enviando datos en formato json con el middleware express.json().
     // Desestructuramos la variable result y llamamos a la funcón validarUsuario() y le pasamos como parámetro req.body.nombre.
     const {error, value} = validarUsuario(req.body.nombre);
 

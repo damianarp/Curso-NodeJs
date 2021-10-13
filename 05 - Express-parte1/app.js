@@ -1,31 +1,36 @@
 // Importaciones necesarias.
 const express = require('express');
+const morgan = require('morgan');
 const Joi = require('joi');
-const logger = require('./logger');
-const auth = require('./auth');
+//const logger = require('./logger');
+//const auth = require('./auth');
 
 // Creamos una instancia de express (nuestra app).
 const app = express();
 
 // Para enviar por POST al servidor (en formato JSON) debemos trabajar con Middlewares para que parseen este tipo de datos cuando el servidor los reciba.
-// Cargamos el middleware express.json() en la app con el método use(), el cual permite recibir como requerimiento formato del tipo JSON.
+// Uso de middleware express.json() en la app con el método use(), el cual permite recibir como requerimiento formato del tipo JSON.
 app.use(express.json());
 
-// Cargamos el middleware express.urlencoded() con la propiedad extended = true, que permite trabajar con querystrings (cadena de consulta que contiene datos con nombre y valor, concatenados con el símbolo &).
+// Uso de middleware express.urlencoded() con la propiedad extended = true, que permite trabajar con querystrings (cadena de consulta que contiene datos con nombre y valor, concatenados con el símbolo &).
 app.use(express.urlencoded({extended:true}));
 
-// Cargamos el middleware express.static() para poder publicar recursos estáticos dentro de un servidor estático, como imágenes, archivos, etc.
+// Uso de middleware express.static() para poder publicar recursos estáticos dentro de un servidor estático, como imágenes, archivos, etc.
 // Le enviamos como parámetro una carpeta que se llame public.
 app.use(express.static('public'));
+
+// Uso de middleware de terceros 'Morgan' que nos permite realizar un registro de todas las peticiones HTTP. Debemos especificarle un formato.
+app.use(morgan('tiny'));
+console.log('Morgan habilitado!');
 
 ///////////
 
 // Ejemplos del uso de middlewares personalizados.
 // Cargamos el middleware logger.
-app.use(logger);
+//app.use(logger);
 
 // Cargamos el middleware auth.
-app.use(auth);
+//app.use(auth);
 
 ///////////
 

@@ -51,6 +51,13 @@ app.get('/api/usuarios/:id',(req, res) => {
 /////// PETICIONES POST ///////
 // Enviamos información al servidor.
 app.post('/api/usuarios',(req, res) => {
+    // Validación sencilla de la petición.
+    // Si no existe el dato que estoy requiriendo dentro del body que se llama nombre o es menor a 2 caracteres, entonces que responda con un status 400 Bad Request.
+    if(!req.body.nombre || req.body.nombre.length <= 2) {
+        res.status(400).send('Debe ingresar un nombre que tenga como mínimo 3 letras.');
+        // Colocamos un return para que no continue la petición cuando detecte este comportamiento y así no se agregue un usuario vacío.
+        return;
+    }
     // Creamos el nuevo usuario.
     const usuario = {
         id: usuarios.length + 1,

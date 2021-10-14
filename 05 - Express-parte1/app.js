@@ -1,5 +1,6 @@
 // Importaciones necesarias.
 const express = require('express');
+const config = require('config');
 const morgan = require('morgan');
 const Joi = require('joi');
 //const logger = require('./logger');
@@ -18,6 +19,13 @@ app.use(express.urlencoded({extended:true}));
 // Uso de middleware express.static() para poder publicar recursos estáticos dentro de un servidor estático, como imágenes, archivos, etc.
 // Le enviamos como parámetro una carpeta que se llame public.
 app.use(express.static('public'));
+
+
+// ********** Configuración de entornos **********//
+console.log('Aplicación: ' + config.get('nombre'));
+console.log('BD Server: ' + config.get('configDB.host'));
+// Para cambiar del entorno de producción al de desarrollo o viceversa, hacer:
+// export NODE_ENV=production ó export NODE_ENV=development en consola.
 
 // Uso de middleware de terceros 'Morgan' que nos permite realizar un registro de todas las peticiones HTTP. Debemos especificarle un formato.
 app.use(morgan('tiny'));

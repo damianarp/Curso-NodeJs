@@ -1,4 +1,6 @@
 // Importaciones necesarias.
+const debug = require('debug')('app:inicio'); // Requiere un parámetro (entorno de depuración para la app). En consola definimos la variable de entorno export DEBUG=app:inicio
+//const dbDebug = require('debug')('app:db'); // En consola definimos la variable de entorno export DEBUG=app:db
 const express = require('express');
 const config = require('config');
 const morgan = require('morgan');
@@ -22,16 +24,25 @@ app.use(express.static('public'));
 
 
 // ********** Configuración de entornos **********//
+
 console.log('Aplicación: ' + config.get('nombre'));
 console.log('BD Server: ' + config.get('configDB.host'));
 // Para cambiar del entorno de producción al de desarrollo o viceversa, hacer:
 // export NODE_ENV=production ó export NODE_ENV=development en consola.
 
-// Uso de middleware de terceros 'Morgan' que nos permite realizar un registro de todas las peticiones HTTP. Debemos especificarle un formato.
-app.use(morgan('tiny'));
-console.log('Morgan habilitado!');
+// ******************************************* //
 
-///////////
+// Uso de middleware de terceros 'Morgan' que nos permite realizar un registro de todas las peticiones HTTP. Debemos especificarle un formato. Solo funcionará en entorno de desarrollo.
+if(app.get('env') === 'development') {
+    app.use(morgan('tiny'));
+    //console.log('Morgan habilitado!');
+    debug('Morgan está habilitado.');
+}
+
+// Para trabajos con la BD.
+debug('Conectando con la BD...');
+
+////////////////////////////////////////////
 
 // Ejemplos del uso de middlewares personalizados.
 // Cargamos el middleware logger.
@@ -40,7 +51,7 @@ console.log('Morgan habilitado!');
 // Cargamos el middleware auth.
 //app.use(auth);
 
-///////////
+////////////////////////////////////////////
 
 // Definimos un arreglo de usuarios, con id y nombre.
 const usuarios = [
